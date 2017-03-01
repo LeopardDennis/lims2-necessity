@@ -1,0 +1,57 @@
+map $request_uri $lims_path_info {
+    ~^/lims/(?P<foo>.*)$  $foo;
+}
+
+server {
+
+
+    root /var/www;
+    index index.php index.html index.htm;
+
+    location ~ \.php$ {
+        fastcgi_pass 127.0.0.1:9000;
+        include fastcgi_params;
+    }
+
+    # 如果location为 lims, redirect到 lims/
+    location = /lims {
+        return 301 lims/;
+    }
+
+    # 正常解析
+    location /lims {
+        alias /usr/share/lims2/public;
+
+        location ~ ^/lims/\!.+\.(js|css|png|jpg|jpeg|gif|ico|swf)$ {
+            rewrite ^/lims/(.+)$ /lims/index.php/public?f=$1;
+            fastcgi_param SITE_ID "%site_id%";
+            fastcgi_param LAB_ID "%lab_id%";
+        }
+
+        location ~ \.php {
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_index index.php;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+            fastcgi_param SITE_ID "%site_id%";
+            fastcgi_param LAB_ID "%lab_id%";
+
+            include fastcgi_params;
+        }
+
+        location ~ \.(js|css|png|jpg|jpeg|gif|ico|swf)$ {
+            expires max;
+               log_not_found off;
+        }
+
+        location ~ \/.+ {
+            try_files $request_uri $request_uri/ /lims/index.php/$lims_path_info;
+        }
+
+        location ~* \.(eot|ttf|woff)$ {
+            add_header Access-Control-Allow-Origin *;
+        }
+
+    }
+}
