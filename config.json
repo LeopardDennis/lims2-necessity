@@ -1,6 +1,6 @@
 {
   "repositories": [
-    {"type": "composer", "url": "http://comproxy.cn/repo/packagist"},
+    {"type": "composer", "url": "https://packagist.phpcomposer.com"},
     {"packagist": false}
   ]
 }

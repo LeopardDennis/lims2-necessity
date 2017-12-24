@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-MAINTAINER maintain@geneegroup.com
+MAINTAINER 17kong.dev@geneegroup.com
 
 # Use faster APT mirror
 ADD sources.list /etc/apt/sources.list
@@ -38,6 +38,11 @@ RUN apt-get -y install libyaml-dev && \
     echo "extension=lua.so" > /etc/php/7.0/mods-available/lua.ini && \
     phpenmod lua
 
+# Swoole
+RUN pecl install swoole && \
+    echo "extension=swoole.so" > /etc/php/7.0/mods-available/swoole.ini && \
+    phpenmod swoole
+
 #Composer
 ADD composer.phar /tmp/composer.phar
 RUN mkdir -p /usr/local/bin && mv /tmp/composer.phar /usr/local/bin/composer && \
@@ -48,17 +53,6 @@ RUN mkdir -p /usr/local/bin && mv /tmp/composer.phar /usr/local/bin/composer && 
     apt-get -y install msmtp-mta mailutils && \
     apt-get -y install expect && \
     rm -rf /var/lib/apt/lists/*
-
-# Scws
-#RUN wget -O - http://www.xunsearch.com/scws/down/scws-1.2.3.tar.bz2 | tar xjf - -C /tmp && \
-#    cd /tmp/scws-1.2.3/ && ./configure --prefix=/usr/local/scws; make; make install && \
-#    cd /tmp/scws-1.2.3/phpext && phpize && \
-#    cd /tmp/scws-1.2.3/phpext && ./configure --with-scws=/usr/local/scws -with-php-config=/usr/bin/php-config && \
-#    make; make install && \
-#    echo "extension=scws.so" > /etc/php/7.0/mods-available/scws.ini && \
-#    echo "scws.default.charset=utf8" > /etc/php/7.0/mods-available/scws.ini && \
-#    echo "scws.default.fpath=/usr/local/scws/etc" > /etc/php/7.0/mods-available/scws.ini && \
-#    phpenmod scws
 
 ENV TZ Asia/Shanghai
 ENV TERM linux
