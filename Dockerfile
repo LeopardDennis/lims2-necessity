@@ -77,6 +77,7 @@ RUN mkdir -p /var/log/php7 && \
     touch /var/log/php7/cli.log && \
     chown -R www-data:www-data /var/log/php7
 ADD supervisor.php7-fpm.conf /etc/supervisor/conf.d/php7-fpm.conf
+ADD supervisor.partner.conf /etc/supervisor/conf.d/partner.conf
 
 # Something extra
 RUN mkdir -p /tmp/lims2 && \
