@@ -86,7 +86,5 @@ RUN mkdir -p /tmp/lims2 && \
     chown -R www-data:www-data /tmp/lims2
 VOLUME ["/var/lib/lims2", "/tmp/lims2", "/volumes"]
 
-EXPOSE 80
-
 RUN chown -R www-data:www-data /var/lib/lims2 /tmp/lims2
 CMD ["/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/supervisord.conf"]
